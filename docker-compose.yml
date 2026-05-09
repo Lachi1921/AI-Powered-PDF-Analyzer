@@ -1,0 +1,46 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  celery_worker:
+    build: .
+    working_dir: /app/analyzer
+    command: celery -A tutor_app worker --loglevel=info
+    env_file: .env
+    volumes:
+      - .:/app
+      - data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  web:
+    build: .
+    working_dir: /app/analyzer
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    env_file: .env
+    volumes:
+      - .:/app
+      - data:/data
+    ports:
+      - "8000:8000"
+
+volumes:
+  rabbitmq_data:
+  data:
