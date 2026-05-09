@@ -1,7 +1,7 @@
 # AI-Powered PDF Analyzer
 
-A Django REST Framework API that extracts content from PDF files and uses AI to generate concise summaries and questions. Built for teachers and students to quickly transform PDF documents into structured learning insights. Designed to help users turn static PDFs into interactive, structured, and AI-generated study material through a simple REST API.
-
+A Django REST Framework API that extracts content from PDF files and uses AI to generate concise summaries and questions. Built for teachers and students to quickly transform PDF documents into structured learning material. Generate AI-generated study material through a simple REST API.
+ 
 ## Features
 
 - Extracts text from uploaded PDF files
